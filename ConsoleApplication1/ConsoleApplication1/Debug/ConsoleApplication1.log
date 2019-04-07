@@ -1,0 +1,17 @@
+﻿  ConsoleApplication1.cpp
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(225): warning C4018: '<=': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(280): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(385): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(420): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(437): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(889): warning C4244: 'argumento': conversão de 'time_t' para 'unsigned int', possível perda de dados
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(941): warning C4244: '=': conversão de 'double' para 'int', possível perda de dados
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(964): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1074): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1090): warning C4244: 'argumento': conversão de 'time_t' para 'unsigned int', possível perda de dados
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1097): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1198): warning C4018: '<=': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1253): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1358): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\ramon\source\repos\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(1389): warning C4018: '<': incompatibilidade de signed/unsigned
+  ConsoleApplication1.vcxproj -> C:\Users\ramon\source\repos\ConsoleApplication1\Debug\ConsoleApplication1.exe

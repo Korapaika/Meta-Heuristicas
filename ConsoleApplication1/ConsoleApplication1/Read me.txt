@@ -1,0 +1,50 @@
+1) The name of each instance consists of the problem's name (FTSP), the geographic distribution (R, C, RC, and RAD), the number to the case or dimension of the instances generated (from 1 to 13), and the number of the instance (from 1 to 20). 
+For example, the instance FTSP_RC_12_19.txt refers to the RC geographical distributions of tasks, case 12 (ie, 500 tasks and 83 technicians - see Table 3 of the paper), and instance 19 of the case 12. 
+
+
+2) Using the paper’s nomenclature, the instances are arranged as presented below:
+
+Number of tasks (n)
+Number of technicians (m)
+
+Priority of tasks (w_i)
+
+Skill of technicians to perform each task (s_ik)
+
+Processing time of each task (p_i)
+Beginning of time windows of tasks (e_i)
+End of time windows of tasks (l_i)
+
+Beginning of time windows of technicians (a_k)
+End of time windows of technicians (b_k)
+
+Parameter M
+Parameter MW
+Parameter MZ
+
+Geographic coordinates of locations of the base and jobs
+
+3) Travel times are equal to Euclidean distances (we use full precision in our experiments).
+
+4) For example, in FTSP_R_1_1.txt, we have:
+
+n = 16
+m = 2
+
+w_1 = 6
+
+s_11 = 1 and s_42 = 0
+
+p_16 = 85
+e_16 = 630
+l_16 = 750
+
+a_2 = 660
+b_2 = 1200
+
+M = 1189
+MW = 2
+MZ = 1080
+
+c_13 = 14.26902
+
