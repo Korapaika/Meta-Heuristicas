@@ -107,6 +107,7 @@ TSol TrocarBit(TSol s, int i, int j);
 TSol SubidaTrocaBit(TSol s);
 TSol Busca(TSol s, int k);
 TSol GerarSolucaoInicial();
+TSol OrdenaEquipes(TSol s);
 TSol TrocarBit(TSol s, int i, int j);
 int irandomico(int min, int max);
 double randomico(double min, double max);
@@ -114,6 +115,9 @@ double RecalculateFO(TSol s);
 TSol2 Perturba(int beta);
 TSol OrdenaPrioridade(TSol s);
 TSol2 Limpa(int pos);
+TSol OrdenaArtigo(TSol s);
+
+
 
 int main()
 {
@@ -669,23 +673,12 @@ int irandomico(int min, int max)
 
 
 /************************************************************************************
-*** Método: TrocarBit(TSol s, int i)                                              ***
+*** Método: TrocarBit(TSol s, int i, int j)                                       ***
 *** Função: Troca um bit da solução s                                             ***
 *************************************************************************************/
 TSol TrocarBit(TSol s, int i, int j)
 {
 	swap(s.sol[i], s.sol[j]);
-	/*swap(task[i], task[j]);
-	swap(c[i], c[j]);
-	for (int k = 0; k < m; k++) {
-		swap(d[k][i], d[k][j]);
-	}*/
-
-
-	/*if (s.sol[i] == 1)
-		s.sol[i] = 0;
-	else
-		s.sol[i] = 1;*/
 
 	return s;
 }
@@ -695,7 +688,7 @@ TSol TrocarBit(TSol s, int i, int j)
 
 /************************************************************************************
 *** Método: GerarSolucaoInicial()                                                 ***
-*** Função: Gerar Solucao Inicial Aleatorimante                                   ***
+*** Função: Gerar Solucao Inicial				                                  ***
 *************************************************************************************/
 TSol GerarSolucaoInicial()
 {
@@ -708,11 +701,92 @@ TSol GerarSolucaoInicial()
 		s.sol[j] = j;
 		result.bt[j] = 0;
 	}
-	s = OrdenaPrioridade(s);
+	/*Adicionar novas ordenações*/
+	//s = OrdenaEquipes(s);
+	//s = OrdenaPrioridade(s);
+	s = OrdenaArtigo(s);
 	s.fo = CalculateFO(s, 0);
 	
 	return s;
 }
+
+TSol OrdenaEquipes(TSol s)
+{
+	TSol novo;
+	novo.sol.resize(n);
+	vector <int> contador;
+	contador.clear();
+	contador.resize(n, 0);
+	// conta equipes para cada tarefa
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (q[i][j] == 1) {
+				contador[i]++;
+			}
+		}
+	}
+	// bubble sort
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i; j < n - 1; j++) {
+			if (contador[j] > contador[j + 1]) {
+				swap(contador[j], contador[j + 1]);
+				swap(s.sol[j], s.sol[j + 1]);
+			}
+		}
+	}
+	// retorno ordenado por quantidade de equipes
+	return s;
+}
+
+TSol OrdenaArtigo(TSol s) 
+{
+	vector <double> prioridade;
+	prioridade.clear();
+	prioridade.resize(n);
+
+	// critério para n/m < 10
+	if (n / m < 10) {
+		vector <int> NST;
+		NST.clear();
+		NST.resize(n, 0);
+		// conta equipes para cada tarefa
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (q[i][j] == 1) {
+					NST[i]++;
+				}
+			}
+		}
+		// calcula a prioridade de ordem de cada tarefa
+		for (int i = 0; i < n; i++) {
+			prioridade[i] = task[i].w - (NST[i] / (m + 1));
+		}
+	}
+	// critério para n/m > 10
+	else {
+		for (int i = 0; i < n; i++) {
+			prioridade[i] = task[i].w + (task[i].w / task[i].pt) + (task[i].pt / (task[i].b - task[i].a));
+		}
+	}
+
+	// ordena as tarefas de acordo com o novo critério
+	for (int i = 0; i < n; i++) {
+		int p = 0, pos = 0;
+		for (int j = i; j < n; j++) {
+			if (prioridade[j] > p) {
+				pos = j;
+				p = prioridade[j];
+			}
+		}
+		swap(prioridade[i], prioridade[pos]);
+		swap(s.sol[i], s.sol[pos]);
+	}
+
+	return s;
+}
+
+
+
 
 
 
@@ -775,12 +849,11 @@ TSol SubidaTrocaBit(TSol s)
 	TSol sLocal = s;
 	TSol2 rLocal = result;       //armazena a solução corrente
 	TSol2 rViz, rAnterior = result;		//armazena melhor solução vizinha
-
+	int cont = 0;
 
 	while (melhorou)
 	{
 		melhorou = 0;
-
 		for (int i = 0; i < m; i++)
 		{
 			//trocar uma equipe
@@ -804,6 +877,28 @@ TSol SubidaTrocaBit(TSol s)
 		s = sLocal;
 		rAnterior = rLocal;
 		rViz = rAnterior;
+		
+		/*if (melhorou == 0 && cont < 3) {
+			melhorou = 1;
+			switch (cont) {
+			case 0:
+				s = OrdenaPrioridade(s);
+				break;
+			case 1:
+				s = OrdenaEquipes(s);
+				break;
+			case 2:
+				for (int i = 0; i < rand() % n; i++)
+				{
+					int pos1 = rand() % n;
+					int pos2 = rand() % n;
+					s = TrocarBit(s, pos1, pos2);
+				}
+				break;
+			}
+			sLocal = s;
+			cont++;
+		}*/
 	}
 	result = rLocal; //melhor solução encontrada
 	return s;
@@ -819,7 +914,8 @@ TSol SubidaTrocaBit(TSol s)
 TSol Busca(TSol s, int k)
 {
 	int melhorou = 1;
-	int pos = irandomico((0+k), (n - 1 - k));
+	//int pos = irandomico((0+k), (n - 1 - k));
+	int pos = rand() % n;
 	TSol sLocal = s;       //armazena a melhor solucao vizinha
 	TSol2 anterior;
 
@@ -829,15 +925,17 @@ TSol Busca(TSol s, int k)
 	{
 		melhorou = 0;
 
-		for (int i = (pos-k); i < (pos+k); i++)
+		//for (int i = (pos-k); i < (pos+k); i++)
+		for(int i = 0; i < n; i++)
 		{
 			if (i != pos) {
 				//trocar um bit
 				//s = TrocarBit(s, i);
 				s = TrocarBit(s, i, pos);
 				//s.fo = CalculateFO(s, 0);
-				int pos2 = irandomico(0, m - 1);
-				s.fo = RecalculateFO(s);
+				//int pos2 = irandomico(0, m - 1);
+				//s.fo = RecalculateFO(s);
+				s.fo = CalculateFO(s, 0);
 
 				//armazenar a melhor troca se a solucao melhorar
 				if (s.fo > sLocal.fo)
@@ -845,9 +943,6 @@ TSol Busca(TSol s, int k)
 					sLocal = s;
 					melhorou = 1;
 					anterior = result;
-				}
-				else {
-					result = anterior;
 				}
 
 				//desfazer a troca e continuar a busca
@@ -857,6 +952,7 @@ TSol Busca(TSol s, int k)
 
 		//continuar a busca a partir da melhor solucao
 		s = sLocal;
+		result = anterior;
 	}
 
 	return s;
@@ -874,7 +970,7 @@ void ILS()
 {
 	int beta = 0;                            //taxa de perturbação
 	int Iter = 0;
-	int IterMax = 800;
+	int IterMax = 2000;
 	int IterMelhora = 0;
 	int delta = 0;
 
@@ -886,24 +982,25 @@ void ILS()
 	TSol2 anterior,
 		perturbado;
 
-	srand(time(NULL)); //seed para numeros aleatorios
+	//srand(time(NULL)); //seed para numeros aleatorios
 	
 	//***Criar a solucao inicial do ILS
 	s = GerarSolucaoInicial();
 
 	//aplicar busca local
 	sMelhor = SubidaTrocaBit(s);
+	//sMelhor = Busca(s, 0);
 
 	//double betaMax = 1, betaMin = 0;
-	int betaMax = 2, betaMin = 1;
+	int betaMax = 10, betaMin = 1;
 
 
 
-	printf("\nDigite a intensidade minima da perturbacao: ");
+	/*printf("\nDigite a intensidade minima da perturbacao: ");
 	scanf("%d", &betaMin);
 
 	printf("\nDigite a intensidade maxima da perturbacao: ");
-	scanf("%d", &betaMax);
+	scanf("%d", &betaMax);*/
 
 
 	while (Iter < IterMax)
@@ -920,15 +1017,33 @@ void ILS()
 		anterior = result;
 
 		//perturba a ordem das tarefas
+
+		//int aux = rand() % 3;
+		/*switch (beta % 3) {
+		case 0: 
+			sViz = OrdenaPrioridade(sViz);
+			break;
+		case 1:
+			sViz = OrdenaEquipes(sViz);
+			break;
+		case 2:
+			for (int i = 0; i < beta; i++)
+			{
+				int pos1 = rand() % n;
+				int pos2 = rand() % n;
+				sViz = TrocarBit(sViz, pos1, pos2);
+			}
+			break;
+		}*/
+
+		// perturba a ordem do vetor de tarefas
 		for (int i = 0; i < beta; i++)
 		{
-			//int pos1 = irandomico(0, n - 1);
 			int pos1 = rand() % n;
-			//int pos2 = irandomico(0, n - 1);
 			int pos2 = rand() % n;
 			sViz = TrocarBit(sViz, pos1, pos2);
 		}
-
+		// perturba a matriz de solução do problema
 		perturbado = Perturba(beta);
 		result = perturbado;
 		sViz.fo = RecalculateFO(sViz);
@@ -936,6 +1051,7 @@ void ILS()
 		//s*' <- busca local (s')
 		//sMelhorViz = SubidaTrocaBit(sViz, betaMin, betaMax);
 		sMelhorViz = SubidaTrocaBit(sViz);
+		//sMelhorViz = Busca(sViz, 0);
 
 		//s* <- criterio de aceitação (s*,s*', historico)
 		delta = sMelhorViz.fo - sMelhor.fo;
@@ -980,7 +1096,6 @@ void ILS()
 
 
 
-
 /************************************************************************************
 *** Método: VNS()                                                                 ***
 *** Função: Aplica a metaheuristica VNS no FTSP                                   ***
@@ -992,7 +1107,7 @@ void VNS()
 	int k, r;
 
 	//numero de estruturas de vizinhança
-	r = 6;
+	r = 16;
 	//printf("\nDigite o numero de vizinhancas do VNS: ");
 	//scanf("%d", &r);
 
@@ -1002,12 +1117,12 @@ void VNS()
 	sMelhor = s;
 
 	int numIteracoes = 0;
-	while (numIteracoes <= 5000)
+	while (numIteracoes <= 500)
 	{
 		//tipo de estrurura de vizinhança
 		k = 1;
 
-		while (k <= r && numIteracoes <= 5000)
+		while (k <= r && numIteracoes <= 500)
 		{
 			//comecar a busca a partir da melhor solucao
 			sViz = sMelhor;
@@ -1015,11 +1130,14 @@ void VNS()
 			//gerar o vizinho aleatoriamente na vizinhança k
 			numIteracoes++;
 
+
 			for (int i = 0; i < k; i++)
 			{
 				//int team = irandomico(0, m - 1);
-				int pos1 = irandomico(0, n - 1);
-				int pos2 = irandomico(0, n - 1);
+				//int pos1 = irandomico(0, n - 1);
+				int pos1 = rand() % n;
+				//int pos2 = irandomico(0, n - 1);
+				int pos2 = rand() % n;
 				sViz = TrocarBit(sViz, pos1, pos2);
 			}
 			sViz.fo = CalculateFO(sViz, 0);
@@ -1051,7 +1169,7 @@ void VNS()
 	}
 	system("cls");
 	CalculateFO(s, 1);
-	printf("\nSolucao Otima = %.5f ", -bestSolution.fo);
+	//printf("\nSolucao Otima = %.5f ", -bestSolution.fo);
 	//ImprimirMelhorSol(sMelhor);
 }
 
@@ -1082,13 +1200,13 @@ TSol2 Limpa(int pos)
 
 
 /************************************************************************************
-*** Método: Perturba(double min, double max)                                      ***
+*** Método: Perturba(int beta)				                                      ***
 *** Função: Realiza uma perturbação nas equipes                                   ***
 *************************************************************************************/
 TSol2 Perturba(int beta)
 {
-	srand(time(NULL)); //seed para numeros aleatorios
-	
+	//srand(time(NULL)); //seed para numeros aleatorios
+
 	TSol2 novo;
 	novo = result;
 	for (int j = 0; j < beta; j++) {
