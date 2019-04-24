@@ -19,9 +19,12 @@ a ordem das tarefas aleatoriamente.
 
 Adicionada nova perturbação que não insere as tarefas removidas de volta no vetor de tarefas
 não realizadas.
+
 Atualizado os parâmetros betaMin e betaMax.
+
 Adicionado critério de aceitação de solução pior:
   - Após 100 iterações sem melhora
+
 Adicionado novo método de ordenação:
   - Por distância
 
