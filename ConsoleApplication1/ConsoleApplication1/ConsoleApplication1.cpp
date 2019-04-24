@@ -23,7 +23,7 @@ using namespace std;
 //Tipo Solução
 struct TSol
 {
-	vector<int> sol;
+	vector <int> sol;
 	double fo;
 };
 
@@ -90,9 +90,10 @@ struct TItem                                // struct with tasks informations
 vector <TItem> task;            //tasks vector
 vector <TItem> team;           //team vector
 TSol2 result;					//results
-
-
-
+vector <int> btTemp;
+vector <int> teamTemp;
+TSol bestSol;
+TSol2 bestResult;
 
 
 /************************************************************************************
@@ -115,7 +116,9 @@ double RecalculateFO(TSol s);
 TSol2 Perturba(int beta);
 TSol OrdenaPrioridade(TSol s);
 TSol2 Limpa(int pos);
+TSol2 Limpa2(int pos);
 TSol OrdenaArtigo(TSol s);
+TSol OrdenaDistancia(TSol s);
 
 
 
@@ -567,6 +570,7 @@ void ReadData(char nameTable[])
 		}
 	}
 
+
 	//print
 	/*printf("\n%d \n%d \n", n, m);
 
@@ -697,6 +701,8 @@ TSol GerarSolucaoInicial()
 	s.sol.resize(n);
 	result.bt.clear();
 	result.bt.resize(n);
+	teamTemp.clear();
+	teamTemp.resize(m, 0);
 	for (int j = 0; j < n; j++) {
 		s.sol[j] = j;
 		result.bt[j] = 0;
@@ -706,6 +712,7 @@ TSol GerarSolucaoInicial()
 	//s = OrdenaPrioridade(s);
 	s = OrdenaArtigo(s);
 	s.fo = CalculateFO(s, 0);
+	
 	
 	return s;
 }
@@ -786,7 +793,26 @@ TSol OrdenaArtigo(TSol s)
 }
 
 
-
+TSol OrdenaDistancia(TSol s)
+{
+	TSol novo;
+	novo.sol.resize(n);
+	vector <double> dist = d[0];
+	// ordena as tarefas de acordo com o novo critério
+	for (int i = 0; i < n; i++) {
+		int p = 99999, pos = -1;
+		for (int j = i; j < n; j++) {
+			if (dist[j] < p) {
+				pos = j;
+				p = dist[j];
+			}
+		}
+		swap(dist[i], dist[pos]);
+		swap(s.sol[i], s.sol[pos]);
+	}
+	// retorno ordenado por quantidade de equipes
+	return s;
+}
 
 
 
@@ -854,16 +880,37 @@ TSol SubidaTrocaBit(TSol s)
 	while (melhorou)
 	{
 		melhorou = 0;
+		cont = rand() % 2;
 		for (int i = 0; i < m; i++)
 		{
 			//trocar uma equipe
-			rViz = Limpa(i);
+			if (cont == 0) {
+				rViz = Limpa(i);
+			}
+			else {
+				rViz = Limpa2(i);
+			}
+
+			//rViz = Limpa2(i);
+
 			result = rViz;
 			s.fo = RecalculateFO(s);
 
 			//armazenar a melhor troca se a solucao melhorar
 			if (s.fo > sLocal.fo)
 			{
+				if (cont == 1) {
+					for (int j = 0; j < btTemp.size(); j++) {
+						result.bt[btTemp[j]] = 0;
+					}
+				}
+
+
+				/*for (int j = 0; j < btTemp.size(); j++) {
+					result.bt[btTemp[j]] = 0;
+				}*/
+
+
 				sLocal = s;
 				melhorou = 1;
 				rLocal = result;
@@ -919,6 +966,7 @@ TSol Busca(TSol s, int k)
 	TSol sLocal = s;       //armazena a melhor solucao vizinha
 	TSol2 anterior;
 
+
 	anterior = result;
 
 	while (melhorou)
@@ -973,6 +1021,7 @@ void ILS()
 	int IterMax = 2000;
 	int IterMelhora = 0;
 	int delta = 0;
+	int cont = 0;
 
 	TSol s,
 		sMelhor,
@@ -982,7 +1031,7 @@ void ILS()
 	TSol2 anterior,
 		perturbado;
 
-	//srand(time(NULL)); //seed para numeros aleatorios
+	srand(time(NULL)); //seed para numeros aleatorios
 	
 	//***Criar a solucao inicial do ILS
 	s = GerarSolucaoInicial();
@@ -990,10 +1039,21 @@ void ILS()
 	//aplicar busca local
 	sMelhor = SubidaTrocaBit(s);
 	//sMelhor = Busca(s, 0);
-
+	bestSol = sMelhor;
+	bestResult = result;
 	//double betaMax = 1, betaMin = 0;
-	int betaMax = 10, betaMin = 1;
+	//int betaMax = 10, betaMin = 1;
+	int betaMin, betaMax;
+	betaMin = round(m * 0.02);
+	betaMax = round(m * 0.1);
 
+	if (betaMin < 1) {
+		betaMin = 1;
+	}
+
+	if (betaMax <= betaMin) {
+		betaMax = betaMin + 1;
+	}
 
 
 	/*printf("\nDigite a intensidade minima da perturbacao: ");
@@ -1018,8 +1078,8 @@ void ILS()
 
 		//perturba a ordem das tarefas
 
-		//int aux = rand() % 3;
-		/*switch (beta % 3) {
+		int aux = rand() % 5;
+		switch (aux) {
 		case 0: 
 			sViz = OrdenaPrioridade(sViz);
 			break;
@@ -1034,15 +1094,22 @@ void ILS()
 				sViz = TrocarBit(sViz, pos1, pos2);
 			}
 			break;
-		}*/
+		case 3:
+			sViz = OrdenaArtigo(sViz);
+			break;
+		case 4:
+			sViz = OrdenaDistancia(sViz);
+			break;
+		}
 
 		// perturba a ordem do vetor de tarefas
-		for (int i = 0; i < beta; i++)
+		/*for (int i = 0; i < beta; i++)
 		{
 			int pos1 = rand() % n;
 			int pos2 = rand() % n;
 			sViz = TrocarBit(sViz, pos1, pos2);
-		}
+		}*/
+
 		// perturba a matriz de solução do problema
 		perturbado = Perturba(beta);
 		result = perturbado;
@@ -1052,24 +1119,29 @@ void ILS()
 		//sMelhorViz = SubidaTrocaBit(sViz, betaMin, betaMax);
 		sMelhorViz = SubidaTrocaBit(sViz);
 		//sMelhorViz = Busca(sViz, 0);
-
+		if (sMelhorViz.fo > bestSol.fo) {
+			bestSol = sMelhorViz;
+			bestResult = result;
+		}
 		//s* <- criterio de aceitação (s*,s*', historico)
 		delta = sMelhorViz.fo - sMelhor.fo;
-		if (delta > 0)
+		if (delta > 0 || cont >= 100)
 		{
 			sMelhor = sMelhorViz;
 			IterMelhora = Iter;
 			anterior = result;
+			cont = 0;
 		}
 		else {
 			result = anterior;
+			cont++;
 		}
 		printf("\nIter: %d \t fo: %.5f ", Iter, sMelhor.fo);
 
 	} //fim-while_ILS
 
 
-	printf("\n\n");
+	/*printf("\n\n");
 	for (int i = 0; i < n; i++)
 		printf("%d ", sMelhor.sol[i]);
 
@@ -1085,7 +1157,29 @@ void ILS()
 		printf("\t [%.2lf] ", result.z[j]);
 	}
 
-	printf("\n\nFO: %.5lf \n\n", sMelhor.fo);
+	printf("\n\nFO: %.5lf \n\n", sMelhor.fo);*/
+
+
+
+
+	// melhor resultado encontrado
+	printf("\n\n");
+	for (int i = 0; i < n; i++)
+		printf("%d ", bestSol.sol[i]);
+
+	printf("\n\n");
+	for (int j = 0; j < m; j++)
+	{
+		printf("\nTeam %d: ", j);
+		for (int i = 0; i < bestResult.route[j].size(); i++)
+		{
+			printf("%2d (%.2lf) - ", bestResult.route[j][i], bestResult.beginTime[bestResult.route[j][i]]);
+		}
+
+		printf("\t [%.2lf] ", bestResult.z[j]);
+	}
+	printf("\n\nBest FO: %.5lf \n\n", bestSol.fo);
+
 
 
 
@@ -1175,7 +1269,28 @@ void VNS()
 
 
 
+/************************************************************************************
+*** Método: Limpa2(int pos)                                                       ***
+*** Função: Limpa as tarefas de uma equipe específica sem atualizar bt            ***
+*************************************************************************************/
+TSol2 Limpa2(int pos)
+{
+	TSol2 novo;
+	novo = result;
 
+	btTemp.clear();
+	btTemp.resize(novo.route[pos].size());
+	
+	novo.z[pos] = team[pos].b - team[pos].a;
+	for (int i = 0; i < novo.route[pos].size(); i++) {
+		btTemp[i] = novo.route[pos][i];
+	}
+	novo.route[pos].clear();
+
+	teamTemp[pos] = 1;
+
+	return novo;
+}
 
 
 
@@ -1193,6 +1308,7 @@ TSol2 Limpa(int pos)
 		novo.bt[novo.route[pos][i]] = 0;
 	}
 	novo.route[pos].clear();
+	teamTemp[pos] = 1;
 
 	return novo;
 }
@@ -1205,12 +1321,15 @@ TSol2 Limpa(int pos)
 *************************************************************************************/
 TSol2 Perturba(int beta)
 {
-	//srand(time(NULL)); //seed para numeros aleatorios
+	srand(time(NULL)); //seed para numeros aleatorios
 
 	TSol2 novo;
 	novo = result;
 	for (int j = 0; j < beta; j++) {
 		int pos = rand() % m;
+
+		teamTemp[pos] = 1;
+
 		novo.z[pos] = team[pos].b - team[pos].a;
 		for (int i = 0; i < novo.route[pos].size(); i++) {
 			novo.bt[novo.route[pos][i]] = 0;
@@ -1295,6 +1414,7 @@ double RecalculateFO(TSol s)
 		for (int j = 0; j < m; j++)
 		{
 			// team j has skill to perform task s.sol[i]
+			//if (q[s.sol[i]][j] == 1 && result.bt[s.sol[i]] == 0 && teamTemp[j] == 1)
 			if (q[s.sol[i]][j] == 1 && result.bt[s.sol[i]] == 0)
 			{
 				// *** find best position to insert task s.sol[i]
@@ -1509,6 +1629,11 @@ double RecalculateFO(TSol s)
 			result.bt[route[j][i]] = 1;
 		}
 	}
+
+	for (int i = 0; i < m; i++) {
+		teamTemp[i] = 0;
+	}
+
 	return -s.fo;
 }
 
