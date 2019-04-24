@@ -15,6 +15,16 @@ A perturbação do ILS limpa as tarefas alocadas de equipes aleatoriamente e tam
 a ordem das tarefas aleatoriamente.
 
 
+23/04/2019
+
+Adicionada nova perturbação que não insere as tarefas removidas de volta no vetor de tarefas
+não realizadas.
+Atualizado os parâmetros betaMin e betaMax.
+Adicionado critério de aceitação de solução pior:
+  - Após 100 iterações sem melhora
+Adicionado novo método de ordenação:
+  - Por distância
+
 16/04/2019
 
 Adicionados métodos de ordenação:
