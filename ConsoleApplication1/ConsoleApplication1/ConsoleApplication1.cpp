@@ -100,6 +100,8 @@ TSol2 bestResult;
 								FUNCTIONS AREA
 *************************************************************************************/
 void ReadData(char nameTable[]);
+void SaveData(char nameTable[]);
+void CreateData(char nameTable[]);
 void FreeMemory();
 void VNS();
 void ILS();
@@ -139,11 +141,11 @@ int main()
 		exit(1);
 	}
 
+	
+
 	// best solution that is saved in txt file
 	TSol sBest;
 	//sBest.sol = { 3,10,9,2,1,0,15,6,8,7,14,11,12,5,13,4 };
-	bestSolution.fo = 221.12681;
-	//bestSolution.fo = 61.13919;
 	// run the method for all test instances
 	while (!feof(arqProblems))
 	{
@@ -153,6 +155,11 @@ int main()
 
 		//read the informations of the instance
 		ReadData(nameTable);
+		/*CreateData(nameTable);
+		for (int i = 0; i < 20; i++) {
+			ILS();
+			SaveData(nameTable);
+		}*/
 		ILS();
 		//VNS();
 		//CalculateFO(sBest, 1);
@@ -450,6 +457,43 @@ double CalculateFO(TSol s, int print)
 }
 
 
+void SaveData(char nameTable[])
+{
+	char name[200] = "";
+	int pc = 0, aux;
+	if (pc == 0)
+		strcpy(name, "Resultados\\");
+	else
+		strcpy(name, "Resultados/");
+
+	strcat(name, nameTable);
+
+	FILE * arq;
+	arq = fopen(name, "a");
+
+	aux = fprintf(arq, "%.5lf\n", bestSol.fo);
+	if (aux == EOF)
+		printf("Erro na Gravacao\n");
+	fclose(arq);
+}
+
+void CreateData(char nameTable[])
+{
+	char name[200] = "";
+	int pc = 0, aux;
+	if (pc == 0)
+		strcpy(name, "Resultados\\");
+	else
+		strcpy(name, "Resultados/");
+
+	strcat(name, nameTable);
+
+	FILE * arq;
+	arq = fopen(name, "wt");
+	fclose(arq);
+}
+
+
 void ReadData(char nameTable[])
 {
 	char name[200] = "";
@@ -654,6 +698,8 @@ void FreeMemory()
 	q.clear();
 	task.clear();
 	team.clear();
+	btTemp.clear();
+	teamTemp.clear();
 }
 
 double randomico(double min, double max)
@@ -1125,7 +1171,9 @@ void ILS()
 		}
 		//s* <- criterio de aceitação (s*,s*', historico)
 		delta = sMelhorViz.fo - sMelhor.fo;
-		if (delta > 0 || cont >= 100)
+		//cont = randomico(0, 1);
+		//if (delta > 0 || (delta < 0 && cont < (exp(delta / Iter))))
+		if (delta > 0 || cont >= 50)
 		{
 			sMelhor = sMelhorViz;
 			IterMelhora = Iter;
@@ -1183,7 +1231,7 @@ void ILS()
 
 
 
-	system("pause");
+	//system("pause");
 	system("cls");
 }
 
