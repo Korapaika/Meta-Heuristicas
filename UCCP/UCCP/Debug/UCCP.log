@@ -1,0 +1,16 @@
+﻿  UCCP.cpp
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(115): warning C4068: pragma desconhecido
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(131): warning C4101: 'opcao2': variável local não referenciada
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(345): warning C4473: 'printf' : não há argumentos suficientes transmitidos para a cadeia de caracteres de formato
+  F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(345): note: espaços reservados e seus parâmetros esperam 1 argumentos variadic, mas 0 foram fornecidos
+  F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(345): note: o argumento variadic 1 ausente é requerido pela cadeia de formato '%d'
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(368): warning C4473: 'printf' : não há argumentos suficientes transmitidos para a cadeia de caracteres de formato
+  F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(368): note: espaços reservados e seus parâmetros esperam 1 argumentos variadic, mas 0 foram fornecidos
+  F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(368): note: o argumento variadic 1 ausente é requerido pela cadeia de formato '%d'
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(558): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(737): warning C4305: '=': truncamento de '__int64' para 'float'
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(741): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(768): warning C4244: 'return': conversão de 'double' para 'int', possível perda de dados
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(837): warning C4244: 'return': conversão de 'double' para 'int', possível perda de dados
+F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\UCCP\UCCP.cpp(985): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+  UCCP.vcxproj -> F:\Users\Ramon\Dropbox\Unifesp Mestrado\Metaheurísticas\Problema 2\Code\UCCP\Debug\UCCP.exe
