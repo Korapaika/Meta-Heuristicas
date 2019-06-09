@@ -16,11 +16,11 @@ using namespace std;
 
 #define MAX(x,y) ((x)<(y) ? (y) : (x))
 
-#define n 150     		 // Iris           
+//#define n 150     		 // Iris           
 //#define n 178     		 // Wine           
 //#define n 47               // Soybean
 //#define n 98         		 // BreastA
-//#define n 180         		 // DLBCLA e DLBCLB
+#define n 180         		 // DLBCLA e DLBCLB
 
 #define restricao 500		 // restrições must-link e cannot link
 
@@ -43,7 +43,7 @@ int LIN;
 //int COL = 661; 				// DLBCLA e DLBCLB
 int COL;
 
-//int k = 3; 					// Iris, Wine
+//int k = 3; 					// Iris, Wine, DLBCLB
 //int k = 4;  				// Soybean
 //int k = 5;
 int k;
@@ -673,7 +673,19 @@ int calc_inviabilidade(int vetor[]) {
 	return penalidade;
 }
 
-
+int RestricoesQuebradas()
+{
+	int inv = 0;
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == 1 && labels[constr[i].p1] != labels[constr[i].p2]) {
+			inv++;
+		}
+		if (constr[i].tipo == -1 && labels[constr[i].p1] == labels[constr[i].p2]) {
+			inv++;
+		}
+	}
+	return inv;
+}
 
 
 
@@ -715,7 +727,7 @@ void SetLabel()
 void MustLinkChain(int p) 
 {
 	for (int i = 0; i < restricao; i++) {
-		if (constr[i].tipo == -1) {
+		if (constr[i].tipo == 1) {
 			if (constr[i].p1 == p && labels[constr[i].p2] == -1) {
 				labels[constr[i].p2] = labels[p];
 				MustLinkChain(constr[i].p2);
@@ -734,18 +746,16 @@ void MustLinkCluster(int* medianas)
 {
 	for (int i = 0; i < restricao; i++) {
 		if (constr[i].p1 == medianas[0] || constr[i].p1 == medianas[1] || constr[i].p1 == medianas[2]) {
-			if (labels[constr[i].p2] == -1 && constr[i].tipo == -1) {
+			if (labels[constr[i].p2] == -1 && constr[i].tipo == 1) {
 				labels[constr[i].p2] = labels[constr[i].p1];
 				MustLinkChain(constr[i].p2);
 			}
-			
 		}
 		else if (constr[i].p2 == medianas[0] || constr[i].p2 == medianas[1] || constr[i].p2 == medianas[2]) {
-			if (labels[constr[i].p1] == -1 && constr[i].tipo == -1) {
+			if (labels[constr[i].p1] == -1 && constr[i].tipo == 1) {
 				labels[constr[i].p1] = labels[constr[i].p2];
 				MustLinkChain(constr[i].p1);
 			}
-			
 		}
 	}
 }
@@ -755,7 +765,7 @@ void MustLinkCluster(int* medianas)
 bool CannotLinkCheck(int pos, int label)
 {
 	for (int i = 0; i < restricao; i++) {
-		if (constr[i].tipo == 1) {
+		if (constr[i].tipo == -1) {
 			if ((constr[i].p1 == pos || constr[i].p2 == pos) && (labels[constr[i].p1] == label || labels[constr[i].p2] == label)) {
 				return false;
 			}
@@ -768,7 +778,7 @@ void CannotLinkCluster()
 {
 	bool loop = false;
 	for (int i = 0; i < restricao; i++) {
-		if (constr[i].tipo == 1) {
+		if (constr[i].tipo == -1) {
 			if (labels[constr[i].p1] == labels[constr[i].p2]) {
 				cout << "ERRO: " << constr[i].p1 << ", " << constr[i].p2 << endl;
 				system("pause");
@@ -781,7 +791,7 @@ void MLCheck()
 {
 	bool loop = false;
 	for (int i = 0; i < restricao; i++) {
-		if (constr[i].tipo == -1) {
+		if (constr[i].tipo == 1) {
 			if (labels[constr[i].p1] == -1 && labels[constr[i].p2] != -1) {
 				labels[constr[i].p1] = labels[constr[i].p2];
 				loop = true;
@@ -801,7 +811,7 @@ void MLCheck()
 
 bool MustLinkCheck(int pos) {
 	for (int i = 0; i < restricao; i++) {
-		if (constr[i].tipo == -1) {
+		if (constr[i].tipo == 1) {
 			if (constr[i].p1 == pos && labels[constr[i].p2] != -1) {
 				labels[constr[i].p1] = labels[constr[i].p2];
 				return true;
@@ -820,7 +830,7 @@ bool MustLinkCheck(int pos) {
 void ClusterML(int label)
 {
 	for (int i = 0; i < restricao; i++) {
-		if (constr[i].tipo == -1) {
+		if (constr[i].tipo == 1) {
 			if (labels[constr[i].p1] == -1 && labels[constr[i].p2] == -1) {
 				labels[constr[i].p1] = label;
 				labels[constr[i].p2] = label;
@@ -833,13 +843,39 @@ void ClusterML(int label)
 }
 
 
+TSolRK BuscaLocal(TSolRK s) {
+	TSolRK viz = s;
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == 1 && viz.labels[constr[i].p1] != viz.labels[constr[i].p2]) {
+			viz.labels[constr[i].p1] = viz.labels[constr[i].p2];
+			if (calc_inviabilidade(viz.labels) > calc_inviabilidade(s.labels)) {
+				viz.labels[constr[i].p1] = s.labels[constr[i].p1];
+				viz.labels[constr[i].p2] = viz.labels[constr[i].p1];
+				if (calc_inviabilidade(viz.labels) > calc_inviabilidade(s.labels)) {
+					viz.labels[constr[i].p2] = s.labels[constr[i].p2];
+				}
+			}
+		}
+
+		if (constr[i].tipo == -1 && viz.labels[constr[i].p1] == viz.labels[constr[i].p2]) {
+			for (int j = 0; j < n; j++) {
+
+			}
+		}
+	}
+
+	return viz;
+}
+
+
+
 /************************************************************************************
 *** Método: Decoder()                                                             ***
 *** Função: Trasnforma uma solucao de chaves aleatorias em uma solucao do problema***
 *************************************************************************************/
 int NewDecoder(TSolRK s)
 {
-	int pc = 1;
+	int pc = 0;
 	if (pc == 0) {
 		return Decoder(s);
 	}
@@ -901,7 +937,7 @@ int NewDecoder(TSolRK s)
 	//MLCheck();
 	//CannotLinkCheck();
 	//MustLinkCluster(medianas); //Agrupar todos os Must-Link com as p-medianas
-	//MLCheck();
+	MLCheck();
 	//cout << "passou 1" << endl;
 	//CannotLinkCluster();
 
@@ -924,8 +960,6 @@ int NewDecoder(TSolRK s)
 				pos = -1;
 				for (int j = 0; j < k; j++) {
 					if (dist[i][medianas[j]] < val && CannotLinkCheck(i, j)) {
-						//if (dist[i][medianas[j]] < val) {
-							//if (dist[i][j] < val && labels[j] != -1 && i != j) {
 						val = dist[i][medianas[j]];
 						pos = medianas[j];
 					}
@@ -989,8 +1023,9 @@ int NewDecoder(TSolRK s)
 
 	//MLCheck();
 
-	for (int i = 0; i < LIN; i++)
+	/*for (int i = 0; i < LIN; i++)
 		s.labels[i] = labels[i];
+	s = BuscaLocal(s);*/
 
 	//fo = alloca_cost();
 	//s.fo_final = fo;
@@ -1003,6 +1038,7 @@ int NewDecoder(TSolRK s)
 
 	fo = alloca_cost();
 	//s.fo_final = fo;
+	//inviabilidade = RestricoesQuebradas();
 	inviabilidade = calc_inviabilidade(labels);
 	fo = fo + (10000 * LIN * inviabilidade);
 
