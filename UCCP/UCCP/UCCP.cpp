@@ -16,13 +16,13 @@ using namespace std;
 
 #define MAX(x,y) ((x)<(y) ? (y) : (x))
 
-//#define n 150     		 // Iris           
+#define n 150     		 // Iris           
 //#define n 178     		 // Wine           
 //#define n 47               // Soybean
 //#define n 98         		 // BreastA
-#define n 180         		 // DLBCLA e DLBCLB
+//#define n 180         		 // DLBCLA e DLBCLB
 
-#define restricao 450		 // restrições must-link e cannot link
+#define restricao 500		 // restrições must-link e cannot link
 
 //Variáveis Globais
 
@@ -146,6 +146,12 @@ int main()
 			COL = 661;
 			k = 3;
 		}
+		else if (strcmp(nameTable, "iris") == 0) {
+			//n = 150;
+			LIN = 150;
+			COL = 4;
+			k = 3;
+		}
 
 		/*cout << n << endl;
 		system("pause");*/
@@ -225,6 +231,7 @@ void LerArquivos(char nameTable[])
 	strcat(open_const, "\\");
 	strcat(open_const, nameTable);
 	strcat(open_const, "_500.constraints");
+	//strcat(open_const, "_50.constraints");
 
 	/*cout << open_const << endl;
 	system("pause");*/
@@ -671,6 +678,161 @@ int calc_inviabilidade(int vetor[]) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+void SetLabel() 
+{
+	for (int i = 0; i < n; i++) {
+		labels[i] = -1;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void MustLinkChain(int p) 
+{
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == -1) {
+			if (constr[i].p1 == p && labels[constr[i].p2] == -1) {
+				labels[constr[i].p2] = labels[p];
+				MustLinkChain(constr[i].p2);
+			}
+			else if (constr[i].p2 == p && labels[constr[i].p1] == -1) {
+				labels[constr[i].p1] = labels[p];
+				MustLinkChain(constr[i].p1);
+			}
+		}
+	}
+}
+
+
+
+void MustLinkCluster(int* medianas)
+{
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].p1 == medianas[0] || constr[i].p1 == medianas[1] || constr[i].p1 == medianas[2]) {
+			if (labels[constr[i].p2] == -1 && constr[i].tipo == -1) {
+				labels[constr[i].p2] = labels[constr[i].p1];
+				MustLinkChain(constr[i].p2);
+			}
+			
+		}
+		else if (constr[i].p2 == medianas[0] || constr[i].p2 == medianas[1] || constr[i].p2 == medianas[2]) {
+			if (labels[constr[i].p1] == -1 && constr[i].tipo == -1) {
+				labels[constr[i].p1] = labels[constr[i].p2];
+				MustLinkChain(constr[i].p1);
+			}
+			
+		}
+	}
+}
+
+
+
+bool CannotLinkCheck(int pos, int label)
+{
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == 1) {
+			if ((constr[i].p1 == pos || constr[i].p2 == pos) && (labels[constr[i].p1] == label || labels[constr[i].p2] == label)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void CannotLinkCluster()
+{
+	bool loop = false;
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == 1) {
+			if (labels[constr[i].p1] == labels[constr[i].p2]) {
+				cout << "ERRO: " << constr[i].p1 << ", " << constr[i].p2 << endl;
+				system("pause");
+			}
+		}
+	}
+}
+
+void MLCheck()
+{
+	bool loop = false;
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == -1) {
+			if (labels[constr[i].p1] == -1 && labels[constr[i].p2] != -1) {
+				labels[constr[i].p1] = labels[constr[i].p2];
+				loop = true;
+			}
+			else if (labels[constr[i].p2] == -1 && labels[constr[i].p1] != -1) {
+				labels[constr[i].p2] = labels[constr[i].p1];
+				loop = true;
+			}
+		}
+	}
+	if (loop) {
+		MLCheck();
+	}
+}
+
+
+
+bool MustLinkCheck(int pos) {
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == -1) {
+			if (constr[i].p1 == pos && labels[constr[i].p2] != -1) {
+				labels[constr[i].p1] = labels[constr[i].p2];
+				return true;
+			}
+			if (constr[i].p2 == pos && labels[constr[i].p1] != -1) {
+				labels[constr[i].p2] = labels[constr[i].p1];
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+
+void ClusterML(int label)
+{
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == -1) {
+			if (labels[constr[i].p1] == -1 && labels[constr[i].p2] == -1) {
+				labels[constr[i].p1] = label;
+				labels[constr[i].p2] = label;
+				MustLinkChain(constr[i].p1);
+				MustLinkChain(constr[i].p2);
+				return;
+			}
+		}
+	}
+}
+
+
 /************************************************************************************
 *** Método: Decoder()                                                             ***
 *** Função: Trasnforma uma solucao de chaves aleatorias em uma solucao do problema***
@@ -682,63 +844,115 @@ int NewDecoder(TSolRK s)
 		return Decoder(s);
 	}
 	
+	SetLabel(); //Atribuir -1 para todas as labels
+
 	//modelos de decoders:
-	//1) menor distância com penalidade
+	//1) menor distância com penalidade (OK)
 	//2) lista de candidatos com função gulosa (distância + restrições)
+		//2.1) Agrupar todos Must-Link das medianas primeiro
 	//3) ordenar os pontos
-	//fase construtiva grasp
-	//ordenar vetor de chaves
-	//alocar somente as p-medianas primeiro
+	//fase construtiva grasp (OK)
+	//ordenar vetor de chaves (OK)
+	//alocar somente as p-medianas primeiro (OK)
 
 	int* medianas;
 	int pos;
 	float val;
 	medianas = (int*)calloc(k, sizeof(int));
-	for (int i = 0; i < k; i++) {
-		val = 2;
-		pos = -1;
-		for (int j = 0; j < n; j++) {
 
-			switch (i) {
-			case 0:
-				if (s.obj[j] < val) {
-					val = s.obj[j];
-					pos = j;
-				}
-			case 1:
-				if (s.obj[j] < val && j != medianas[0]) {
-					val = s.obj[j];
-					pos = j;
-				}
-			case 2:
-				if (s.obj[j] < val && j != medianas[0] && j != medianas[1]) {
-					val = s.obj[j];
-					pos = j;
-				}
+	// --------------------------------------------------------------------------------------------------------
+	/*for (int i = 0; i < k; i++) {
+		ClusterML(i);
+		medianas[i] = -1;
+	}
+
+	for (int i = 0; i < k; i++) {
+		for (int j = 0; j < n; j++) {
+			if (medianas[i] == -1 && labels[j] == i) {
+				medianas[i] = j;
 			}
 		}
-		medianas[i] = pos;
-		labels[pos] = i;
+	}*/ //NAO DEU CERTO
+	// --------------------------------------------------------------------------------------------------------
+
+
+	// SELECIONAR AS MEDIANAS ---------------------------------------------------------------------------------
+	for (int i = 0; i < k; i++) {
+		pos = -1;
+		val = 9999999;
+		for (int j = 0; j < n; j++) {
+			if (s.obj[j] < val && labels[j] == -1) {
+				val = s.obj[j];
+				pos = j;
+			}
+		}
+		if (pos != -1) {
+			medianas[i] = pos;
+			labels[pos] = i;
+		}
 	}
+	// --------------------------------------------------------------------------------------------------------
 	
+
+
+	//cout << "Medianas: " << medianas[0] << ", " << medianas[1] << ", " << medianas[2] << endl;
+	//cout << "Labels: " << labels[medianas[0]] << ", " << labels[medianas[1]] << ", " << labels[medianas[2]] << endl;
+	//system("pause");
+	//MLCheck();
+	//CannotLinkCheck();
+	//MustLinkCluster(medianas); //Agrupar todos os Must-Link com as p-medianas
+	//MLCheck();
+	//cout << "passou 1" << endl;
+	//CannotLinkCluster();
 
 
 	double fo;
 	inviabilidade = 0;
 
-	int aux;
-	for (int i = 0; i < n; i++) {
-		aux = 0;
-		for (int j = 0; j < k; j++) {
-			if (i == medianas[j]) {
-				aux = 1;
+	
+	//CannotLinkCheck();
+	//MLCheck();
+
+	// CLASSIFICA POR ORDEM DE CRITÉRIO: ML, CL, DISTÂNCIA -----------------------------------------------------
+	/*for (int i = 0; i < n; i++) {
+		if (labels[i] == -1) {
+			if (MustLinkCheck(i)) {
+
+			}
+			else {
+				val = 9999999999;
+				pos = -1;
+				for (int j = 0; j < k; j++) {
+					if (dist[i][medianas[j]] < val && CannotLinkCheck(i, j)) {
+						//if (dist[i][medianas[j]] < val) {
+							//if (dist[i][j] < val && labels[j] != -1 && i != j) {
+						val = dist[i][medianas[j]];
+						pos = medianas[j];
+					}
+				}
+				if (pos == -1) {
+					for (int j = 0; j < n; j++) {
+						if (dist[i][j] < val && labels[j] != -1) {
+							val = dist[i][j];
+							pos = j;
+						}
+					}
+				}
+				labels[i] = labels[pos];
 			}
 		}
-		if (aux == 0) {
+	}*/
+	// --------------------------------------------------------------------------------------------------------
+
+
+	/*
+	// CLASSIFICA POR MENOR DISTÂNCIA DE QUALQUER PONTO -------------------------------------------------------
+	for (int i = 0; i < n; i++) {
+		if (labels[i] == -1) {
 			val = 9999999999;
 			pos = -1;
-			for (int j = 0; j < k; j++) {
-				if (dist[i][j] < val) {
+			for (int j = 0; j < n; j++) {
+				if (dist[i][j] < val && labels[j] != -1) {
 					val = dist[i][j];
 					pos = j;
 				}
@@ -746,8 +960,34 @@ int NewDecoder(TSolRK s)
 			labels[i] = labels[pos];
 		}
 	}
+	// --------------------------------------------------------------------------------------------------------
+	*/
+	
 
 
+
+
+	// CLASSIFICA POR MENOR DISTÂNCIA DA MEDIANA --------------------------------------------------------------
+	for (int i = 0; i < n; i++) {
+		if (labels[i] == -1) {
+			val = 9999999999;
+			pos = -1;
+			for (int j = 0; j < k; j++) {
+				//if (dist[i][medianas[j]] < val && CannotLinkCheck(i, labels[medianas[j]]) == 0) {
+				if (dist[i][medianas[j]] < val) {
+				//if (dist[i][j] < val && labels[j] != -1 && i != j) {
+					val = dist[i][medianas[j]];
+					pos = medianas[j];
+				}
+			}
+			labels[i] = labels[pos];
+		}
+	}
+	// --------------------------------------------------------------------------------------------------------
+	
+
+
+	//MLCheck();
 
 	for (int i = 0; i < LIN; i++)
 		s.labels[i] = labels[i];
