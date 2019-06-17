@@ -1,0 +1,101 @@
+
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 41.311 cont_rest: 1
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 48.910 cont_rest: 2
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 45.523 cont_rest: 3
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.385 cont_rest: 4
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 46.013 cont_rest: 5
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.306 cont_rest: 6
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.042 cont_rest: 7
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 38.256 cont_rest: 8
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.780 cont_rest: 9
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 40.443 cont_rest: 10
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.928 cont_rest: 11
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.818 cont_rest: 12
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 46.451 cont_rest: 13
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 42.907 cont_rest: 14
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 45.807 cont_rest: 15
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.219 cont_rest: 16
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.129 cont_rest: 17
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 48.739 cont_rest: 18
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 46.011 cont_rest: 19
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.067 cont_rest: 20
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 47.275 cont_rest: 21
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 41.198 cont_rest: 22
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 45.927 cont_rest: 23
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 47.076 cont_rest: 24
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 47.181 cont_rest: 25
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 48.006 cont_rest: 26
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 51.727 cont_rest: 27
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 52.530 cont_rest: 28
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 42.648 cont_rest: 29
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 42.756 cont_rest: 30
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.304 cont_rest: 31
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 46.459 cont_rest: 32
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 42.422 cont_rest: 33
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 48.203 cont_rest: 34
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.780 cont_rest: 35
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.446 cont_rest: 36
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 40.175 cont_rest: 37
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 41.464 cont_rest: 38
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 46.232 cont_rest: 39
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 41.409 cont_rest: 40
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 38.375 cont_rest: 41
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 42.882 cont_rest: 42
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 44.670 cont_rest: 43
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.735 cont_rest: 44
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 39.995 cont_rest: 45
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.447 cont_rest: 46
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.098 cont_rest: 47
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 42.688 cont_rest: 48
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.089 cont_rest: 49
+
+ Inviabilidades: 0  FO: 5198760.568375 Tempo total: 43.480 cont_rest: 50
