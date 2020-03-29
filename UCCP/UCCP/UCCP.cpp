@@ -4,6 +4,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,7 +23,7 @@ using namespace std;
 //#define n 98         		 // BreastA
 #define n 180         		 // DLBCLA e DLBCLB
 
-#define restricao 500		 // restrições must-link e cannot link
+#define restricao 200		 // restrições must-link e cannot link
 
 //Variáveis Globais
 
@@ -47,6 +48,9 @@ int COL;
 //int k = 4;  				// Soybean
 //int k = 5;
 int k;
+
+
+char dest[50] = "Resultados\\";
 
 
 double** dist;
@@ -109,6 +113,31 @@ int calc_inviabilidade(int vetor[]);
 //int calc_inviabilidade(vector<int> vetor);
 void BRKGA();
 
+void PrintMatrizDistancia(char nameTable[])
+{
+	if (nameTable == NULL) {
+		exit(1);
+	}
+	FILE* arquivo;
+	char nomearqB[50] = "Distancias\\";
+	strcat(nomearqB, nameTable);
+	strcat(nomearqB, ".txt");
+	arquivo = fopen(nomearqB, "a");
+	if (!arquivo)
+	{
+		printf("\n\nErro ao abrir o arquivo .txt!!!");
+		getchar();
+		exit(1);
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			fprintf(arquivo, "%.4f\t", dist[i][j]);
+		}
+		fprintf(arquivo, "\n");
+	}
+	
+}
+
 double randomico(double min, double max);
 int irandomico(int min, int max);
 
@@ -128,7 +157,7 @@ int main()
 		getchar();
 		exit(1);
 	}
-	int opcao = 0, opcao2;
+	int opcao = 0, opcao2, m;
 	char nameTable[100];
 	//melhor_custo = 99999999999999;
 	//labels.clear();
@@ -152,15 +181,34 @@ int main()
 			COL = 4;
 			k = 3;
 		}
+		else if (strcmp(nameTable, "wine") == 0) {       
+			//n = 178;     			// Wine
+			LIN = 178;   			// Wine
+			COL = 13;    			// Wine
+			k = 3; 					// Iris, Wine, DLBCLB, BreastA
+		}
+		else if (strcmp(nameTable, "BreastA") == 0) {
+			//n = 98;
+			LIN = 98;    			// BreastA
+			COL = 1213; 			// BreastA 
+			k = 3;
+		}
+		else if (strcmp(nameTable, "soybean") == 0) {
+			//n = 47;
+			LIN = 47;    			// Soybean
+			COL = 35;      			// Soybean
+			k = 4;
+		}
 
 		/*cout << n << endl;
 		system("pause");*/
 
 		//read the informations of the instance
 		//LerArquivos(nameTable);
+		//PrintMatrizDistancia(nameTable);
 	}
 
-	
+	//exit(0);
 
 
 
@@ -225,15 +273,22 @@ void LerArquivos(char nameTable[])
 
 	/*cout << nomearqB << endl;
 	system("pause");*/
-
+	char buffer[4];
 	char open_const[50] = "Restricoes\\";
 	strcat(open_const, nameTable);
 	strcat(open_const, "\\");
 	strcat(open_const, nameTable);
-	strcat(open_const, "_500.constraints");
-	//strcat(open_const, "_50.constraints");
+	strcat(open_const, "_");
+	_itoa(restricao, buffer, 10);
+	strcat(open_const, buffer);
+	strcat(open_const, ".constraints");
 
-	/*cout << open_const << endl;
+	strcat(dest, nameTable);
+	strcat(dest, "\\");
+	strcat(dest, buffer);
+	strcat(dest, "\\");
+
+	/*cout << dest << endl;
 	system("pause");*/
 
 	// Alocar memória para o conjunto de instâncias
@@ -397,8 +452,10 @@ Funcao: gravar as soluções em um arquivo .TXT
 void GravarSaida(TSolRK s)
 {
 	FILE* arquivo;
-
-	arquivo = fopen("Resultados.txt", "a");
+	char arq[60];
+	strcpy(arq, dest);
+	strcat(arq, "Resultados.txt");
+	arquivo = fopen(arq, "a");
 
 	if (!arquivo)
 	{
@@ -440,8 +497,10 @@ Funcao: gravar as soluções em um arquivo .TXT de todas as iterações
 void GravarSaidaTotal(TSolRK s)
 {
 	FILE* arquivo;
-
-	arquivo = fopen("Resultados_total.txt", "a");
+	char arq[60];
+	strcpy(arq, dest);
+	strcat(arq, "Resultados_total.txt");
+	arquivo = fopen(arq, "a");
 
 	if (!arquivo)
 	{
@@ -479,10 +538,13 @@ void GravarSaidaTotal(TSolRK s)
 void GravarSaidalista(TSolRK s)
 {
 	FILE* arquivo;
+	char arq[60];
+	strcpy(arq, dest);
+	strcat(arq, "Resultados_lista.txt");
 	if (s.inviabilidade == 0)
 		cont_rest = cont_rest + 1;
 
-	arquivo = fopen("Resultados_lista.txt", "a");
+	arquivo = fopen(arq, "a");
 
 	if (!arquivo)
 	{
@@ -605,7 +667,7 @@ void limpar_populacaoRK(TSolRK Pop[], int tamPop)
 *************************************************************************************/
 
 double alloca_cost() {
-
+	
 	for (int q = 0; q < k; q++) {
 		C[q].nnos = 0;
 		C[q].custo = 0.0;
@@ -721,7 +783,16 @@ void SetLabel()
 
 
 
-
+void Test()
+{
+	for (int i = 0; i < restricao; i++) {
+		if (constr[i].tipo == 1) {
+			if (labels[constr[i].p1] != labels[constr[i].p2]) {
+				system("pause");
+			}
+		}
+	}
+}
 
 
 void MustLinkChain(int p) 
@@ -875,7 +946,7 @@ TSolRK BuscaLocal(TSolRK s) {
 *************************************************************************************/
 int NewDecoder(TSolRK s)
 {
-	int pc = 0;
+	int pc = 1;
 	if (pc == 0) {
 		return Decoder(s);
 	}
@@ -915,7 +986,7 @@ int NewDecoder(TSolRK s)
 	// SELECIONAR AS MEDIANAS ---------------------------------------------------------------------------------
 	for (int i = 0; i < k; i++) {
 		pos = -1;
-		val = 9999999;
+		val = 9999999.9;
 		for (int j = 0; j < n; j++) {
 			if (s.obj[j] < val && labels[j] == -1) {
 				val = s.obj[j];
@@ -927,6 +998,7 @@ int NewDecoder(TSolRK s)
 			labels[pos] = i;
 		}
 	}
+
 	// --------------------------------------------------------------------------------------------------------
 	
 
@@ -949,34 +1021,55 @@ int NewDecoder(TSolRK s)
 	//CannotLinkCheck();
 	//MLCheck();
 
-	// CLASSIFICA POR ORDEM DE CRITÉRIO: ML, CL, DISTÂNCIA -----------------------------------------------------
+	// CLASSIFICA POR ORDEM DE CRITÉRIO: ML, CL, DISTÂNCIA DE QUALQUER PONTO -----------------------------------
 	/*for (int i = 0; i < n; i++) {
 		if (labels[i] == -1) {
-			if (MustLinkCheck(i)) {
-
+			val = 9999999999;
+			pos = -1;
+			for (int j = 0; j < k; j++) {
+				if (dist[i][medianas[j]] < val && CannotLinkCheck(i, j)) {
+					val = dist[i][medianas[j]];
+					pos = medianas[j];
+				}
 			}
-			else {
-				val = 9999999999;
-				pos = -1;
+			if (pos == -1) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][j] < val && labels[j] != -1) {
+						val = dist[i][j];
+						pos = j;
+					}
+				}
+			}
+			labels[i] = labels[pos];
+		}
+	}*/
+	// --------------------------------------------------------------------------------------------------------
+
+
+	// CLASSIFICA POR ORDEM DE CRITÉRIO: ML, CL, DISTÂNCIA DE UMA MEDIANA -------------------------------------
+	for (int i = 0; i < n; i++) {
+		if (labels[i] == -1) {
+			val = 9999999999;
+			pos = -1;
+			for (int j = 0; j < k; j++) {
+				if (dist[i][medianas[j]] < val && CannotLinkCheck(i, j)) {
+					val = dist[i][medianas[j]];
+					pos = medianas[j];
+				}
+			}
+			if (pos == -1) {
 				for (int j = 0; j < k; j++) {
-					if (dist[i][medianas[j]] < val && CannotLinkCheck(i, j)) {
+					if (dist[i][medianas[j]] < val) {
 						val = dist[i][medianas[j]];
 						pos = medianas[j];
 					}
 				}
-				if (pos == -1) {
-					for (int j = 0; j < n; j++) {
-						if (dist[i][j] < val && labels[j] != -1) {
-							val = dist[i][j];
-							pos = j;
-						}
-					}
-				}
-				labels[i] = labels[pos];
 			}
+			labels[i] = labels[pos];
 		}
-	}*/
+	}
 	// --------------------------------------------------------------------------------------------------------
+
 
 
 	/*
@@ -1002,30 +1095,28 @@ int NewDecoder(TSolRK s)
 
 
 	// CLASSIFICA POR MENOR DISTÂNCIA DA MEDIANA --------------------------------------------------------------
-	for (int i = 0; i < n; i++) {
+	/*for (int i = 0; i < n; i++) {
 		if (labels[i] == -1) {
 			val = 9999999999;
 			pos = -1;
 			for (int j = 0; j < k; j++) {
-				//if (dist[i][medianas[j]] < val && CannotLinkCheck(i, labels[medianas[j]]) == 0) {
 				if (dist[i][medianas[j]] < val) {
-				//if (dist[i][j] < val && labels[j] != -1 && i != j) {
 					val = dist[i][medianas[j]];
 					pos = medianas[j];
 				}
 			}
 			labels[i] = labels[pos];
 		}
-	}
+	}*/
 	// --------------------------------------------------------------------------------------------------------
 	
-
+	//Test();
 
 	//MLCheck();
 
-	/*for (int i = 0; i < LIN; i++)
+	for (int i = 0; i < LIN; i++)
 		s.labels[i] = labels[i];
-	s = BuscaLocal(s);*/
+	//s = BuscaLocal(s);*/
 
 	//fo = alloca_cost();
 	//s.fo_final = fo;
@@ -1121,7 +1212,7 @@ int Decoder(TSolRK s)
 void BRKGA()
 {
 	//int n = 50;		    // size of chromosomes
-	int p = 1000;	        // size of population
+	int p = 150;	        // size of population
 	double pe = 0.2;	    // fraction of population to be the elite-set
 	double pm = 0.2;      // fraction of population to be replaced by mutants
 	double rhoe = 0.6;	// probability that offspring inherit an allele from elite parent  
@@ -1192,7 +1283,7 @@ void BRKGA()
    }
 	*/
 	int numGeracoes = 0;
-	while (numGeracoes < 1000)
+	while (numGeracoes < 500)
 	{
 		TSolRK* PopInter;
 		//vector <TSolRK> PopInter;
